@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import logging
-import asyncio
 from process_game_state import process_game_state
 
 app = Flask(__name__)
