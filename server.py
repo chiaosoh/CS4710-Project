@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 import logging
 from process_game_state import process_game_state
@@ -15,9 +15,11 @@ def disable_options_logging():
 @app.route('/game_state', methods=['POST'])
 def game_state():
     game_data = request.json
-    reward, player_state = process_game_state(game_data)
+    reward, move = process_game_state(game_data)
     print(f"Calculated reward: {reward}")
-    return jsonify({"status": "success", "reward": reward})
+    response = jsonify({"status": "success", "reward": reward, "move": move})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == '__main__':
     app.run(debug=False, threaded=True)

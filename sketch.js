@@ -22,7 +22,7 @@ var winCounter = 0;
 
 // Limits # of requests being sent to Flask server
 let lastRequestTime = 0;
-const delayBetweenRequests = 100;
+const delayBetweenRequests = 500;
 
 function setup() {
   var canvas = createCanvas(1280, 720);
@@ -258,22 +258,47 @@ function getGameState() {
   return state;
 }
 
-function aiMove(move_string) {
-  move = JSON.parse(move_string)
-  console.log(move.key);
-  console.log(move.toggle);
-  switch(move.key)  {
+function aiMove(move) {
+
+  up = false;
+  down = false;
+  right = false;
+  left = false;
+
+  switch (move) {
+    case "up-left":
+      up = true;
+      left = true;
+      break;
     case "up":
-      up = move.toggle;
+      up = true;
       break;
-    case "down":
-      down = move.toggle;
-      break;
-    case "right":
-      right = move.toggle;
+    case "up-right":
+      up = true;
+      right = true;
       break;
     case "left":
-      left = move.toggle;
+      left = true;
+      break;
+    case "stay":
+      // No movement, just stay in place
+      break;
+    case "right":
+      right = true;
+      break;
+    case "down-left":
+      down = true;
+      left = true;
+      break;
+    case "down":
+      down = true;
+      break;
+    case "down-right":
+      down = true;
+      right = true;
+      break;
+    default:
+      console.log("Unknown move");
       break;
   }
   setPlayerVelocity();
@@ -290,32 +315,9 @@ function sendGameStateToPython(gameState) {
       body: JSON.stringify(gameState),
   })
   .then(response => response.json())
-  .then(data => console.log('Response from Python:', data))
+  .then(data => {
+    const move = data.move;
+    aiMove(move);
+  })
   .catch(error => console.error('Error sending data to Python:', error));
-
-
-  //currently just choose a random move, would return this from backend if it would work for me
-  /*
-   const moves = ["up", "down", "right", "left"]
-   const rand_move = moves[Math.floor(Math.random() * moves.length)];
-   if (up == true) {
-     up = false;
-   }
-   if (down == true) {
-     down = false;
-   }
-    if (right == true) {
-      right = false;
-   }
-   if (left == true) {
-     left = false;
-   }
-
-   //pass a move of this form to aiMove() to move the player
-   const move_hardcode = {key: rand_move, toggle: true};
-   const move = JSON.stringify(move_hardcode);
-   aiMove(move)
-   */
-
-
 }
