@@ -20,6 +20,10 @@ var winArea; //a solid which is the win zone i.e. the green bits
 
 var winCounter = 0;
 
+// Limits # of requests being sent to Flask server
+let lastRequestTime = 0;
+const delayBetweenRequests = 100;
+
 function setup() {
   var canvas = createCanvas(1280, 720);
   canvas.parent("canvas");
@@ -56,7 +60,11 @@ function draw() {
   background(180, 181, 254);
   drawTiles();
   write();
-
+  const now = Date.now();
+  if (now - lastRequestTime >= delayBetweenRequests) {
+    lastRequestTime = now;
+    sendGameStateToPython(getGameState());
+  }
   if (humanPlaying) {
     //if the user is controlling the square
     if ((player.dead && player.fadeCounter <= 0) || player.reachedGoal) {
@@ -209,4 +217,105 @@ function setPlayerVelocity() {
   if (right) {
     player.vel.x += 1;
   }
+}
+
+function calculateDistance(pos1, pos2) {
+  return Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y)
+}
+
+//Description of game state in JSON format
+function getGameState() {
+  const state = {
+    player: {
+      position: [player.pos.x, player.pos.y],
+      velocity: [player.vel.x, player.vel.y],
+      is_dead: player.dead,
+      reached_goal: player.reachedGoal,
+      steps_taken: player.moveCount,
+    },
+    environment: {
+      obstacles: solids.map(solid => ({
+        position: [solid.pos.x, solid.pos.y],
+        size: solid.size,
+      })),
+      moving_obstacles: dots.map(dot => ({
+        position: [dot.position.x, dot.position.y],
+        velocity: [dot.velocity.x, dot.velocity.y],
+        size: dot.diameter,
+      })),
+      goal_area: {
+        position: [winArea.pos.x, winArea.pos.y],
+        size: winArea.size,
+      },
+    },
+    distances: {
+      to_goal: calculateDistance(player.pos, winArea.pos),
+      to_nearest_dot: Math.min(
+        ...dots.map(dot => calculateDistance(player.pos, dot.position))
+      ),
+    },
+  };
+  return state;
+}
+
+function aiMove(move_string) {
+  move = JSON.parse(move_string)
+  console.log(move.key);
+  console.log(move.toggle);
+  switch(move.key)  {
+    case "up":
+      up = move.toggle;
+      break;
+    case "down":
+      down = move.toggle;
+      break;
+    case "right":
+      right = move.toggle;
+      break;
+    case "left":
+      left = move.toggle;
+      break;
+  }
+  setPlayerVelocity();
+}
+
+
+// Function to send JSON over to Flask server
+function sendGameStateToPython(gameState) {
+  fetch('http://localhost:5000/game_state', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(gameState),
+  })
+  .then(response => response.json())
+  .then(data => console.log('Response from Python:', data))
+  .catch(error => console.error('Error sending data to Python:', error));
+
+
+  //currently just choose a random move, would return this from backend if it would work for me
+  /*
+   const moves = ["up", "down", "right", "left"]
+   const rand_move = moves[Math.floor(Math.random() * moves.length)];
+   if (up == true) {
+     up = false;
+   }
+   if (down == true) {
+     down = false;
+   }
+    if (right == true) {
+      right = false;
+   }
+   if (left == true) {
+     left = false;
+   }
+
+   //pass a move of this form to aiMove() to move the player
+   const move_hardcode = {key: rand_move, toggle: true};
+   const move = JSON.stringify(move_hardcode);
+   aiMove(move)
+   */
+
+
 }

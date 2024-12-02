@@ -1,10 +1,15 @@
-In the current state of the repo, you can run the project by running a httpserver
+In the current state of the repo, you can run the project by running a httpserver + a flask server
 
-### With node.js:
+### Dependencies
+(make this not manual later)
 
-```npm install -g http-server```
+```pip install flask```
 
-```http-server```
+```pip install flask-cors```
+
 
 ### With python:
-```python3 -m http.server```
+
+```python3 -m http.server``` for the frontend
+
+``` python server.py``` for the backend
