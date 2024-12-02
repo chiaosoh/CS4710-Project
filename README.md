@@ -1,11 +1,8 @@
 In the current state of the repo, you can run the project by running a httpserver + a flask server
 
 ### Dependencies
-(make this not manual later)
 
-```pip install flask```
-
-```pip install flask-cors```
+```pip install -r requirements.txt``
 
 
 ### With python:
