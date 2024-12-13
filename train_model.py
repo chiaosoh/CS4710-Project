@@ -6,6 +6,9 @@ from stable_baselines3 import PPO
 
 # Defining the env for the model to train in
 class WorldsHardestGameEnv(gym.Env):
+    """
+    Environment definition
+    """
     def __init__(self, grid_size=10, num_dots=5, max_walls=10, max_steps=10000):
         super(WorldsHardestGameEnv, self).__init__()
         
@@ -32,7 +35,10 @@ class WorldsHardestGameEnv(gym.Env):
         self.current_step = 0
         
         self.reset()
-    
+
+    """
+    Reset function
+    """
     def reset(self):
         # Reset step counter
         self.current_step = 0
@@ -50,6 +56,9 @@ class WorldsHardestGameEnv(gym.Env):
         
         return self.get_observation()
     
+    """
+    Default walls (currently only wall layout)
+    """
     def default_level_walls(self):
         # Walls are defined as [x, y, width, height]
         walls = [
@@ -66,6 +75,9 @@ class WorldsHardestGameEnv(gym.Env):
         ]
         return np.array(walls, dtype=np.float64)
     
+    """
+    Randomly places the goal (and ensures its not in a wall)
+    """
     def place_goal(self):
         while True:
             goal = np.array([random.randint(0, self.grid_size - 1), random.randint(0, self.grid_size - 1)])
@@ -75,7 +87,10 @@ class WorldsHardestGameEnv(gym.Env):
                 for wall in self.walls
             ):
                 return goal
-            
+    
+    """
+    Wall/player collision check
+    """
     def check_wall_collision(self, new_position):
         for wall in self.walls:
             x, y, width, height = wall
@@ -85,6 +100,9 @@ class WorldsHardestGameEnv(gym.Env):
                 return True
         return False
 
+    """
+    Model observation, need to reshape everything to (17, 4) as defined in the observation space
+    """
     def get_observation(self):
         # Pad the cube_position, dots, and goal with zeros to match the walls' shape
         cube_padded = np.pad(self.cube_position.reshape(1, 2), ((0, 0), (0, 2)), mode='constant')
@@ -103,6 +121,9 @@ class WorldsHardestGameEnv(gym.Env):
             axis=0
         )
 
+    """
+    Step with the model, calculate new player position + rewards
+    """
     def step(self, action):
         self.current_step += 1
         velocity = np.array([0, 0])
@@ -142,9 +163,8 @@ class WorldsHardestGameEnv(gym.Env):
             if not self.check_wall_collision(new_dot_pos):
                 self.dots[i] = np.clip(new_dot_pos, 0, self.grid_size-1)
         
-        """
-        Reward Calculations
-        """
+        # ------------------------------------------------
+        # Reward calculations
         done = False
 
         # Compute distances to dots and goal

@@ -225,13 +225,6 @@ function calculateDistance(pos1, pos2) {
 
 //Description of game state in JSON format
 function getGameState() {
-  const solidWalls = solids.map(solid => ({
-    position: [solid.pos.x, solid.pos.y],
-    size: [
-      Math.abs(solid.bottomRight.x - solid.pos.x),
-      Math.abs(solid.bottomRight.y - solid.pos.y)
-    ]
-  }));
   const state = {
     player: {
       position: [player.pos.x, player.pos.y],

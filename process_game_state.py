@@ -6,6 +6,9 @@ import numpy as np
 model = PPO.load("ppo_worlds_hardest_game.zip")
 
 def preprocess_state(data):
+    """
+    Model environment expects a shape of (17, 4), need to preprocess the data to match that
+    """
     # Player pos
     player_position = np.array(data.get("player", {}).get("position", [0, 0]) + [0, 0]).reshape(1, 4)
     # Walls (solids)
