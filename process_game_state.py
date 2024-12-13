@@ -33,3 +33,11 @@ def process_game_state(data):
     move = action_map.get(action, "unknown")
     reward = int(sum(observation.flatten()))
     return reward, move
+
+
+data = sys.argv[1]
+data = json.loads(data)
+response = process_game_state(data)
+print(response)
+sys.stdout.flush()
+
