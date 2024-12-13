@@ -225,6 +225,13 @@ function calculateDistance(pos1, pos2) {
 
 //Description of game state in JSON format
 function getGameState() {
+  const solidWalls = solids.map(solid => ({
+    position: [solid.pos.x, solid.pos.y],
+    size: [
+      Math.abs(solid.bottomRight.x - solid.pos.x),
+      Math.abs(solid.bottomRight.y - solid.pos.y)
+    ]
+  }));
   const state = {
     player: {
       position: [player.pos.x, player.pos.y],
@@ -234,9 +241,12 @@ function getGameState() {
       steps_taken: player.moveCount,
     },
     environment: {
-      obstacles: solids.map(solid => ({
+      walls: solids.map(solid => ({
         position: [solid.pos.x, solid.pos.y],
-        size: solid.size,
+        size: [
+          Math.abs(solid.bottomRight.x - solid.pos.x),
+          Math.abs(solid.bottomRight.y - solid.pos.y)
+        ]
       })),
       moving_obstacles: dots.map(dot => ({
         position: [dot.position.x, dot.position.y],
