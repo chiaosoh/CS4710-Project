@@ -15,4 +15,4 @@ In the current state of the repo, you can run the project by running a httpserve
 
 ```python3 -m http.server``` for the frontend
 
-``` python express-server.py``` for the backend
+```node express-server.js``` for the backend
