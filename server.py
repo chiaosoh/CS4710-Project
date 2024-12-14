@@ -4,7 +4,7 @@ import logging
 from process_game_state import process_game_state
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)   
 
 # Disable OPTIONS message every single time the server receives a POST
 @app.before_request
