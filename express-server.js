@@ -21,7 +21,7 @@ app.post('/game_state', (request, response) => {
 
     const {spawn} = require('child_process');
     var data = request.body
-    console.log(data);
+    const jsonString = JSON.stringify(data);
 
     const model = spawn('python', ["process_game_state.py", data])
 
