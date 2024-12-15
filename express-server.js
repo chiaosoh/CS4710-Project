@@ -9,7 +9,7 @@ const corsOptions ={
    optionSuccessStatus:200,
 }
 
-const {PythonShell} =require('python-shell');
+//const {PythonShell} =require('python-shell');
 
 app.use(cors(corsOptions)) // Use this after the variable declaration
 
