@@ -6,20 +6,18 @@ import numpy as np
 model = PPO.load("ppo_worlds_hardest_game.zip")
 
 def preprocess_state(data):
-    player_state = data.get("player", {})
-    # player pos
     player_position = np.array(data.get("player", {}).get("position", [0, 0])).reshape(1, 2)
-    # dots
     moving_obstacles = data.get("environment", {}).get("moving_obstacles", [])
     max_dots = 5
     dots_representation = np.array([dot['position'] for dot in moving_obstacles]).reshape(-1, 2)
-    # If there are fewer than 5 dots, pad with zeros
     if len(dots_representation) < max_dots:
-        dots_representation = np.pad(dots_representation, ((0, max_dots - len(dots_representation)), (0, 0)), mode='constant')
-    # goal pos
+        dots_representation = np.pad(dots_representation, ((0, max_dots - len(dots_representation)), (0, 0)), mode="constant")
     goal_position = np.array(data.get("environment", {}).get("goal_area", {}).get("position", [0, 0])).reshape(1, 2)
-    state_representation = np.vstack([player_position, dots_representation, goal_position])
+    walls = np.array(data.get("environment", {}).get("walls", []))
+    walls_representation = np.pad(walls, ((0, 5 - len(walls)), (0, 0)), mode="constant")
+    state_representation = np.vstack([player_position, dots_representation, goal_position, walls_representation])
     return state_representation
+
 
 def process_game_state(data):
     observation = preprocess_state(data)
