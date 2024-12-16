@@ -2,11 +2,17 @@ In the current state of the repo, you can run the project by running a httpserve
 
 ### Dependencies
 
-```pip install -r requirements.txt``
+```pip install -r requirements.txt```
+
+```npm install express```
+
+```npm install child_process ```
+
+```npm install cors```
 
 
 ### With python:
 
 ```python3 -m http.server``` for the frontend
 
-``` python server.py``` for the backend
+```node express-server.js``` for the backend

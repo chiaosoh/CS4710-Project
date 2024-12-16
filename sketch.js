@@ -226,31 +226,31 @@ function calculateDistance(pos1, pos2) {
 //Description of game state in JSON format
 function getGameState() {
   const state = {
-    player: {
-      position: [player.pos.x, player.pos.y],
-      velocity: [player.vel.x, player.vel.y],
-      is_dead: player.dead,
-      reached_goal: player.reachedGoal,
-      steps_taken: player.moveCount,
+    "player": {
+      "position": [player.pos.x, player.pos.y],
+      "velocity": [player.vel.x, player.vel.y],
+      "is_dead": player.dead,
+      "reached_goal": player.reachedGoal,
+      "steps_taken": player.moveCount,
     },
-    environment: {
-      obstacles: solids.map(solid => ({
-        position: [solid.pos.x, solid.pos.y],
-        size: solid.size,
+    "environment": {
+      "obstacles": solids.map(solid => ({
+        "position": [solid.pos.x, solid.pos.y],
+        "size": solid.size,
       })),
-      moving_obstacles: dots.map(dot => ({
-        position: [dot.position.x, dot.position.y],
-        velocity: [dot.velocity.x, dot.velocity.y],
-        size: dot.diameter,
+      "moving_obstacles": dots.map(dot => ({
+        "position": [dot.position.x, dot.position.y],
+        "velocity": [dot.velocity.x, dot.velocity.y],
+        "size": dot.diameter,
       })),
-      goal_area: {
-        position: [winArea.pos.x, winArea.pos.y],
-        size: winArea.size,
+      "goal_area": {
+        "position": [winArea.pos.x, winArea.pos.y],
+        "size": winArea.size,
       },
     },
-    distances: {
-      to_goal: calculateDistance(player.pos, winArea.pos),
-      to_nearest_dot: Math.min(
+    "distances": {
+      "to_goal": calculateDistance(player.pos, winArea.pos),
+      "to_nearest_dot": Math.min(
         ...dots.map(dot => calculateDistance(player.pos, dot.position))
       ),
     },
@@ -307,7 +307,8 @@ function aiMove(move) {
 
 // Function to send JSON over to Flask server
 function sendGameStateToPython(gameState) {
-  fetch('http://localhost:5000/game_state', {
+  console.log(gameState)
+  fetch('http://localhost:5001/game_state', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
