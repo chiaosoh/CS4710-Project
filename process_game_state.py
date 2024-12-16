@@ -38,3 +38,10 @@ def process_game_state(data):
     if current_distance < 1:
         reward = 3000
     return reward, move
+
+data = sys.argv[1]
+data = json.loads(data)
+response = process_game_state(data)
+print(response)
+sys.stdout.flush()
+

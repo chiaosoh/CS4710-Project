@@ -1,2 +1,10 @@
 venv
 __pycache__
+
+# Node.js dependencies
+node_modules/
+package-lock.json
+
+# Ignore all package.json variations and package-lock.json variations
+package*.json
+package-lock*.json
