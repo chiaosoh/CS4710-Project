@@ -49,10 +49,10 @@ class WorldsHardestGameEnv(gym.Env):
         # Randomly place 3 dots (they will move randomly)
         self.dots = np.array([[random.randint(0, self.grid_size-1), random.randint(0, self.grid_size-1)] for _ in range(self.num_dots)], dtype=np.float64)
         
+        self.walls = self.default_level_walls()
+
         # Randomly place the goal
         self.goal_position = self.place_goal()
-
-        self.walls = self.default_level_walls()
         
         return self.get_observation()
     
@@ -61,18 +61,27 @@ class WorldsHardestGameEnv(gym.Env):
     """
     def default_level_walls(self):
         # Walls are defined as [x, y, width, height]
-        walls = [
-            [0, 0, 0, 9],  # Left wall
-            [9, 0, 0, 9],  # Right wall
-            [0, 0, 9, 0],  # Top wall
-            [0, 9, 9, 0],  # Bottom wall
-            [1, 1, 0, 7],  # Vertical wall
-            [1, 1, 4, 0],  # Horizontal wall
-            [5, 1, 0, 5],  # Horizontal wall
-            [2, 3, 0, 4],  # Vertical wall
-            [7, 2, 0, 6],  # Vertical wall
-            [3, 6, 5, 0]   # Horizontal wall
-        ]
+        walls = []
+        for _ in range(self.max_walls):
+            # Randomly generate x, y position for the top-left corner of the wall
+            x = random.randint(0, self.grid_size - 1)
+            y = random.randint(0, self.grid_size - 1)
+
+            if random.choice([True, False]): 
+                # Width is large, height is small
+                width = random.randint(3, 5)  
+                height = random.randint(1, 2)  
+            else:
+                # Height is large, width is small
+                width = random.randint(1, 2) 
+                height = random.randint(3, 5)
+
+            # Ensure the wall fits within the grid boundaries
+            x = min(x, self.grid_size - width)
+            y = min(y, self.grid_size - height)
+
+            # Add the wall to the list
+            walls.append([x, y, width, height])
         return np.array(walls, dtype=np.float64)
     
     """
@@ -152,6 +161,13 @@ class WorldsHardestGameEnv(gym.Env):
         if not self.check_wall_collision(new_position):
             self.cube_position = new_position
 
+        # # If no movement has occurred (position does not change), apply a random movement to "escape"
+        # if not np.array_equal(self.cube_position, new_position):
+        #     random_action = random.choice([0, 1, 2, 3, 5, 6, 7, 8])  # Randomly choose a new direction
+        #     random_velocity = action_velocities[random_action] * player_speed
+        #     self.cube_position += random_velocity
+        #     self.cube_position = np.clip(self.cube_position, 0, self.grid_size-1)
+
         # Ensure the cube doesn't go out of bounds
         self.cube_position = np.clip(self.cube_position, 0, self.grid_size-1)
 
@@ -180,7 +196,9 @@ class WorldsHardestGameEnv(gym.Env):
         else:
             # Reward exploration and progress
             # Encourage staying away from dots
-            dot_penalty = -5 / (min(dot_distances) + 1)
+            dot_penalty = 0
+            if min_dot_distance < 50:
+                dot_penalty = -5 / (min(dot_distances) + 1)
             
             # Encourage moving towards the goal
             goal_approach_reward = -1 * goal_distance
@@ -214,7 +232,7 @@ class WorldsHardestGameEnv(gym.Env):
     
 # Train the model
 if __name__ == '__main__':
-    env = WorldsHardestGameEnv(grid_size=10, num_dots=5)
-    model = PPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=50000)
-    model.save("ppo_worlds_hardest_game")
+    env = WorldsHardestGameEnv(grid_size=20, num_dots=5)
+    model = PPO("MlpPolicy", env, verbose=1, batch_size=256, n_steps=2048, ent_coef=0.01, learning_rate=1e-4, max_grad_norm=0.5)
+    model.learn(total_timesteps=250000)
+    model.save("ppo_worlds_hardest_game_2")
