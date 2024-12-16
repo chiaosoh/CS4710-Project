@@ -60,6 +60,10 @@ function draw() {
   background(180, 181, 254);
   drawTiles();
   write();
+  // Testing -- draw the walls as red rectangles
+  // for (let i = 0; i < solids.length; i++) {
+  //   solids[i].draw();
+  // }
   const now = Date.now();
   if (now - lastRequestTime >= delayBetweenRequests) {
     lastRequestTime = now;

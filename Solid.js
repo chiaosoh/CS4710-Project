@@ -10,6 +10,12 @@ class Solid {
     this.bottomRight = createVector(this.pos.x + this.w, this.pos.y + this.h);
   }
 
+  draw() {
+    fill(255, 0, 0, 100); // Set color for solid (red with transparency)
+    noStroke();
+    rect(this.pos.x, this.pos.y, this.w, this.h); // Draw the solid as a rectangle
+  }
+
   restrictMovement(tl, br, movement) {
     //player dimensions
     //add the x first

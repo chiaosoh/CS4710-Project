@@ -171,7 +171,7 @@ class WorldsHardestGameEnv(gym.Env):
         # Ensure the cube doesn't go out of bounds
         self.cube_position = np.clip(self.cube_position, 0, self.grid_size-1)
 
-        # Move the dots randomly (TODO: set proper movement)
+        # Move the dots randomly
         for i in range(len(self.dots)):
             dot_velocity = np.array([random.choice([-1.0, 0.0, 1.0]), random.choice([-1.0, 0.0, 1.0])])
             new_dot_pos = self.dots[i] + dot_velocity
