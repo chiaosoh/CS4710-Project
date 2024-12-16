@@ -31,8 +31,6 @@ class WorldsHardestGameEnv(gym.Env):
         # Randomly place the goal
         self.goal_position = np.array([random.randint(0, self.grid_size-1), random.randint(0, self.grid_size-1)])
 
-        self.previous_distance_to_goal = np.linalg.norm(self.goal_position - self.cube_position)
-        
         return self.get_observation()
 
     def get_observation(self):
