@@ -52,16 +52,16 @@ class Player {
 
   checkCollisions() {
     for (var i = 0; i < dots.length; i++) {
-      if (
-        dots[i].collides(
-          this.pos,
-          createVector(this.pos.x + this.size, this.pos.y + this.size)
-        )
-      ) {
-        this.fading = true;
-        this.dead = true;
-        this.deathByDot = true;
-      }
+      // if (
+      //   dots[i].collides(
+      //     this.pos,
+      //     createVector(this.pos.x + this.size, this.pos.y + this.size)
+      //   )
+      // ) {
+      //   this.fading = true;
+      //   this.dead = true;
+      //   this.deathByDot = true;
+      // }
     }
     if (
       winArea.collision(

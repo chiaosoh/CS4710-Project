@@ -30,6 +30,8 @@ class WorldsHardestGameEnv(gym.Env):
         
         # Randomly place the goal
         self.goal_position = np.array([random.randint(0, self.grid_size-1), random.randint(0, self.grid_size-1)])
+
+        self.previous_distance_to_goal = np.linalg.norm(self.goal_position - self.cube_position)
         
         return self.get_observation()
 
@@ -72,21 +74,21 @@ class WorldsHardestGameEnv(gym.Env):
         self.dots += np.array([random.choice([-1, 0, 1]), random.choice([-1, 0, 1])])
         self.dots = np.clip(self.dots, 0, self.grid_size-1)
         
-        # Dot collision check
+        # # Dot collision check
         done = False
-        for dot in self.dots:
-            if self.check_collision(self.cube_position, dot, player_diameter=1):
-                reward = -100  # Negative reward for collision with a dot
-                done = True
-                break
-        # Reached goal
-        if np.array_equal(self.cube_position, self.goal_position):
-            reward = 100
+        # for dot in self.dots:
+        #     if self.check_collision(self.cube_position, dot, player_diameter=1):
+        #         reward = -100  # Negative reward for collision with a dot
+        #         done = True
+        #         break
+        # # Reached goal
+        if np.linalg.norm(self.cube_position - self.goal_position) < 10:
+            reward = 3000
             done = True
         # Encourage cube to move towards goal
         else:
-            distance_to_goal = np.linalg.norm(self.cube_position - self.goal_position)
-            reward = -distance_to_goal
+            current_distance = np.linalg.norm(self.cube_position - self.goal_position)
+            reward = (max(0, 1 / (current_distance + 1e-5)) * 100)
 
         return self.get_observation(), reward, done, {}
     
@@ -99,7 +101,7 @@ class WorldsHardestGameEnv(gym.Env):
     
 # Train the model
 if __name__ == '__main__':
-    env = WorldsHardestGameEnv(grid_size=10, num_dots=5)
+    env = WorldsHardestGameEnv(grid_size=1000, num_dots=5)
     model = PPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=10000)
+    model.learn(total_timesteps=100000)
     model.save("ppo_worlds_hardest_game")

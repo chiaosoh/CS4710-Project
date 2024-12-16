@@ -219,14 +219,14 @@ function setDots() {
 
 
 function setSolids() {
-  solids.push(new Solid(tiles[1][1], tiles[1][8]));
-  solids.push(new Solid(tiles[1][1], tiles[5][1]));
-  solids.push(new Solid(tiles[5][1], tiles[5][6]));
-  solids.push(new Solid(tiles[1][8], tiles[7][8]));
-  solids.push(new Solid(tiles[7][7], tiles[15][8]));
-  solids.push(new Solid(tiles[16][3], tiles[16][8]));
-  solids.push(new Solid(tiles[16][8], tiles[20][8]));
-  solids.push(new Solid(tiles[20][1], tiles[21][8]));
-  solids.push(new Solid(tiles[14][1], tiles[20][1]));
-  solids.push(new Solid(tiles[5][2], tiles[14][2]));
+  // solids.push(new Solid(tiles[1][1], tiles[1][8]));
+  // solids.push(new Solid(tiles[1][1], tiles[5][1]));
+  // solids.push(new Solid(tiles[5][1], tiles[5][6]));
+  // solids.push(new Solid(tiles[1][8], tiles[7][8]));
+  // solids.push(new Solid(tiles[7][7], tiles[15][8]));
+  // solids.push(new Solid(tiles[16][3], tiles[16][8]));
+  // solids.push(new Solid(tiles[16][8], tiles[20][8]));
+  // solids.push(new Solid(tiles[20][1], tiles[21][8]));
+  // solids.push(new Solid(tiles[14][1], tiles[20][1]));
+  // solids.push(new Solid(tiles[5][2], tiles[14][2]));
 }
