@@ -18,6 +18,8 @@ class WorldsHardestGameEnv(gym.Env):
         
         # Positions of cube + dots
         self.observation_space = spaces.Box(low=0, high=self.grid_size-1, shape=(self.num_dots + 2, 2), dtype=np.int32)
+
+        self.time_steps = 0
         
         self.reset()
     
@@ -31,6 +33,8 @@ class WorldsHardestGameEnv(gym.Env):
         # Randomly place the goal
         self.goal_position = np.array([random.randint(0, self.grid_size-1), random.randint(0, self.grid_size-1)])
 
+        self.time_steps = 0
+
         return self.get_observation()
 
     def get_observation(self):
@@ -40,6 +44,7 @@ class WorldsHardestGameEnv(gym.Env):
         velocity = np.array([0, 0])
         # Tilesize / 15
         player_speed = 50 / 15
+        self.time_steps += 1
 
         if action == 0:  # Move up-left
             velocity = np.array([-1, 1])
@@ -76,10 +81,10 @@ class WorldsHardestGameEnv(gym.Env):
         done = False
         # for dot in self.dots:
         #     if self.check_collision(self.cube_position, dot, player_diameter=1):
-        #         reward = -100  # Negative reward for collision with a dot
+        #         reward = -3000  # Negative reward for collision with a dot
         #         done = True
         #         break
-        # # Reached goal
+        # Reached goal
         if np.linalg.norm(self.cube_position - self.goal_position) < 10:
             reward = 3000
             done = True
@@ -87,6 +92,8 @@ class WorldsHardestGameEnv(gym.Env):
         else:
             current_distance = np.linalg.norm(self.cube_position - self.goal_position)
             reward = (max(0, 1 / (current_distance + 1e-5)) * 100)
+        decay_factor = 0.99
+        reward *= decay_factor ** self.time_steps
 
         return self.get_observation(), reward, done, {}
     

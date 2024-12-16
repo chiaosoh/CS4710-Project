@@ -31,5 +31,10 @@ def process_game_state(data):
         6: "down-left",  7: "down",     8: "down-right"
     }
     move = action_map.get(action, "unknown")
-    reward = int(sum(observation.flatten()))
+    player_position = observation[0]
+    goal_position = observation[-1]
+    current_distance = np.linalg.norm(player_position - goal_position)
+    reward = -current_distance
+    if current_distance < 1:
+        reward = 3000
     return reward, move
