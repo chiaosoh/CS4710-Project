@@ -5,9 +5,13 @@ import numpy as np
 
 model = PPO.load("ppo_worlds_hardest_game.zip")
 
+"""
+Collects and modifies + reshapes the data to pass to the model
+Model environment expects a shape of (17, 4)
+"""
 def preprocess_state(data):
     """
-    Model environment expects a shape of (17, 4), need to preprocess the data to match that
+    
     """
     # Player pos
     player_position = np.array(data.get("player", {}).get("position", [0, 0]) + [0, 0]).reshape(1, 4)
@@ -41,6 +45,9 @@ def preprocess_state(data):
     ])
     return state_representation
 
+"""
+Sends the data for preprocessing, feeds it to the model, returns the model's move decision
+"""
 def process_game_state(data):
     observation = preprocess_state(data)
     action, _states = model.predict(observation, deterministic=True)
@@ -51,5 +58,4 @@ def process_game_state(data):
         6: "down-left",  7: "down",     8: "down-right"
     }
     move = action_map.get(action, "unknown")
-    reward = int(sum(observation.flatten()))
-    return reward, move
+    return move

@@ -23,9 +23,8 @@ def game_state():
         return response
     elif request.method == 'POST':
         game_data = request.json
-        reward, move = process_game_state(game_data)
-        print(f"Calculated reward: {reward}")
-        response = jsonify({"status": "success", "reward": reward, "move": move})
+        move = process_game_state(game_data)
+        response = jsonify({"status": "success", "move": move})
         return response
 
 if __name__ == '__main__':

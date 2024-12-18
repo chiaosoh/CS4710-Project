@@ -57,7 +57,7 @@ class WorldsHardestGameEnv(gym.Env):
         return self.get_observation()
     
     """
-    Default walls (currently only wall layout)
+    (Mostly) randomized level walls
     """
     def default_level_walls(self):
         # Walls are defined as [x, y, width, height]
@@ -96,6 +96,16 @@ class WorldsHardestGameEnv(gym.Env):
                 for wall in self.walls
             ):
                 return goal
+            
+    """
+    Dot/player collision check
+    """
+    def check_collision(self, player_pos, dot_pos, player_diameter=1):
+        # Distance between player and dot
+        distance = np.linalg.norm(player_pos - dot_pos)
+        if distance < player_diameter: 
+            return True
+        return False
     
     """
     Wall/player collision check
@@ -161,13 +171,6 @@ class WorldsHardestGameEnv(gym.Env):
         if not self.check_wall_collision(new_position):
             self.cube_position = new_position
 
-        # # If no movement has occurred (position does not change), apply a random movement to "escape"
-        # if not np.array_equal(self.cube_position, new_position):
-        #     random_action = random.choice([0, 1, 2, 3, 5, 6, 7, 8])  # Randomly choose a new direction
-        #     random_velocity = action_velocities[random_action] * player_speed
-        #     self.cube_position += random_velocity
-        #     self.cube_position = np.clip(self.cube_position, 0, self.grid_size-1)
-
         # Ensure the cube doesn't go out of bounds
         self.cube_position = np.clip(self.cube_position, 0, self.grid_size-1)
 
@@ -222,13 +225,6 @@ class WorldsHardestGameEnv(gym.Env):
             'goal_distance': goal_distance,
             'dot_distances': dot_distances
         }
-    
-    def check_collision(self, player_pos, dot_pos, player_diameter=1):
-        # Distance between player and dot
-        distance = np.linalg.norm(player_pos - dot_pos)
-        if distance < player_diameter: 
-            return True
-        return False
     
 # Train the model
 if __name__ == '__main__':
