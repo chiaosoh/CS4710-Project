@@ -265,6 +265,7 @@ function getGameState() {
   return state;
 }
 
+// Convert the move returned by model into a move for the agent
 function aiMove(move) {
 
   up = false;

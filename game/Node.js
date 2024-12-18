@@ -1,6 +1,4 @@
 class Node {
-  //used to define short term goals for the players
-  //------------------------------------------------------------------------------------------------------------------------------
   constructor(nodeTile) {
     this.reached = false;
     this.distToFinish = 0.0;
