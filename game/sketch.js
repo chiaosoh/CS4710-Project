@@ -60,6 +60,10 @@ function draw() {
   background(180, 181, 254);
   drawTiles();
   write();
+  // Testing -- draw the walls as red rectangles
+  // for (let i = 0; i < solids.length; i++) {
+  //   solids[i].draw();
+  // }
   const now = Date.now();
   if (now - lastRequestTime >= delayBetweenRequests) {
     lastRequestTime = now;
@@ -234,9 +238,12 @@ function getGameState() {
       steps_taken: player.moveCount,
     },
     environment: {
-      obstacles: solids.map(solid => ({
+      walls: solids.map(solid => ({
         position: [solid.pos.x, solid.pos.y],
-        size: solid.size,
+        size: [
+          Math.abs(solid.bottomRight.x - solid.pos.x),
+          Math.abs(solid.bottomRight.y - solid.pos.y)
+        ]
       })),
       moving_obstacles: dots.map(dot => ({
         position: [dot.position.x, dot.position.y],

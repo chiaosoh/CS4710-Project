@@ -221,7 +221,7 @@ function setDots() {
 function setSolids() {
   solids.push(new Solid(tiles[1][1], tiles[1][8]));
   solids.push(new Solid(tiles[1][1], tiles[5][1]));
-  solids.push(new Solid(tiles[5][1], tiles[5][6]));
+  solids.push(new Solid(tiles[5][3], tiles[5][6]));
   solids.push(new Solid(tiles[1][8], tiles[7][8]));
   solids.push(new Solid(tiles[7][7], tiles[15][8]));
   solids.push(new Solid(tiles[16][3], tiles[16][8]));
